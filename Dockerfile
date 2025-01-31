@@ -1,20 +1,22 @@
-# Use official Node.js image as a base
+# Use a Node.js base image
 FROM node:16
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+# Set working directory in the container
+WORKDIR /app
 
-# Copy package.json and package-lock.json first to leverage Docker cache
+# Copy package.json and package-lock.json first for caching dependencies
 COPY package*.json ./
 
-# Install project dependencies
+# Set npm registry and increase timeout
+RUN npm config set registry https://registry.npm.taobao.org
+RUN npm config set fetch-timeout 60000
 RUN npm install
 
 # Copy the rest of the project files into the container
 COPY . .
 
-# Expose the port your Node.js app listens on (replace with actual port if different)
+# Expose the port the app runs on
 EXPOSE 3000
 
-# Command to run the app (replace with your start command)
-CMD ["npm", "start"]
+# Command to run your application
+CMD ["node", "app.js"]
